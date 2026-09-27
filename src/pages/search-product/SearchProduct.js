@@ -1,7 +1,7 @@
 import PropTypes from "prop-types";
 import React, { Fragment, useState, useEffect } from 'react';
 import MetaTags from 'react-meta-tags';
-import { useHistory } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { BreadcrumbsItem } from 'react-breadcrumbs-dynamic';
 import { connect } from 'react-redux';
 import Layout from '../../layouts/Layout';
@@ -23,7 +23,7 @@ const SearchProduct = ({ strings, location, defaultStore, currentLanguageCode, s
     const [subCategory, setSubCategory] = useState([]);
 
     const { pathname } = location;
-    const history = useHistory()
+    const navigate = useNavigate()
     const getLayout = (layout) => {
         setLayout(layout)
     }
@@ -31,7 +31,7 @@ const SearchProduct = ({ strings, location, defaultStore, currentLanguageCode, s
     const getCategoryParams = (sortType, sortValue) => {
         // console.log(sortValue)
         setCategoryID(sortValue.id)
-        history.push("/category/" + sortValue.description.friendlyUrl)
+        navigate("/category/" + sortValue.description.friendlyUrl)
     }
 
     useEffect(() => {

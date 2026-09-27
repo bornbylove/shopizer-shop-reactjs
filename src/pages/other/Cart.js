@@ -1,7 +1,7 @@
 import PropTypes from "prop-types";
 import React, { Fragment, useState, useEffect } from "react";
 import { multilanguage } from "redux-multilanguage";
-import { Link, useHistory } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useToasts } from "react-toast-notifications";
 import MetaTags from "react-meta-tags";
 import { BreadcrumbsItem } from "react-breadcrumbs-dynamic";
@@ -91,7 +91,7 @@ const Cart = ({
 }) => {
   const { addToast } = useToasts();
   const { pathname } = location;
-  const history = useHistory();
+  const navigate = useNavigate();
   const [cartItems, setCartItems] = useState({})
   // const cartTotalPrice = cartItems.displaySubTotal;
   // const grandTotalPrice = cartItems.displaySubTotal;
@@ -114,7 +114,7 @@ const Cart = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
   useEffect(() => {
-    console.log(cartCount)
+
     async function fetchData() {
       let action = constant.ACTION.CART + cartID + '?store=' + defaultStore;
       try {
@@ -123,9 +123,8 @@ const Cart = ({
           setCartItems(response)
         }
       } catch (error) {
-        console.log(error, 'jaimin')
-        setTimeout(() => {
-          history.push('/')
+      setTimeout(() => {
+          navigate('/')
         }, 200);
       }
     }
@@ -146,7 +145,7 @@ const Cart = ({
     } catch (error) {
       setLoader(false)
       setTimeout(() => {
-        history.push('/')
+        navigate('/')
       }, 200);
 
     }
@@ -156,7 +155,7 @@ const Cart = ({
       deleteFromCart(cartItems.code, value, defaultStore, addToast)
     });
     //go to home page
-    history.push('/');
+    navigate('/');
 
   }
 

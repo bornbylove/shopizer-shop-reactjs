@@ -1,6 +1,6 @@
 import PropTypes from "prop-types";
 import React, { Fragment, useEffect, useState } from "react";
-import { Link, useHistory } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import MetaTags from "react-meta-tags";
 import { connect } from "react-redux";
 import { BreadcrumbsItem } from "react-breadcrumbs-dynamic";
@@ -23,7 +23,6 @@ import { setLoader } from "../../redux/actions/loaderActions";
 // import {
 //   deleteAllFromCart
 // } from "../../redux/actions/cartActions";
-import Script from 'react-load-script';
 import { multilanguage } from "redux-multilanguage";
 
 
@@ -243,7 +242,7 @@ const CARD_ELEMENT_OPTIONS = {
 };
 const Checkout = ({shipStateData, isLoading, currentLanguageCode, merchant, strings, location, cartID, defaultStore,getShippingCountry, getState,getShippingState,  shipCountryData, stateData, currentLocation, userData, setLoader, deleteAllFromCart }) => {
   const { pathname } = location;
-  const history = useHistory();
+  const navigate = useNavigate();
   const { addToast } = useToasts();
   const [config, setConfig] = useState({});
   const [cartItems, setCartItems] = useState([]);
@@ -259,6 +258,24 @@ const Checkout = ({shipStateData, isLoading, currentLanguageCode, merchant, stri
     mode: "onChange",
     criteriaMode: "all"
   });
+
+  const googleMapsUrl = "https://maps.googleapis.com/maps/api/js?key=" + window._env_.APP_MAP_API_KEY + "&libraries=places";
+  useEffect(() => {
+    const script = document.createElement('script');
+    script.src = googleMapsUrl;
+    script.async = true;
+    script.defer = true;
+    script.onload = handleScriptLoad;
+    document.body.appendChild(script);
+    return () => {
+      document.body.removeChild(script);
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+
+
+
 
 
 
@@ -279,7 +296,6 @@ const Checkout = ({shipStateData, isLoading, currentLanguageCode, merchant, stri
 
   const getSummaryOrder = async () => {
     setLoader(true)
-    console.log('GET SUMMARY')
     let action = constant.ACTION.CART + cartID + '?store=' + defaultStore;
     try {
       let response = await WebService.get(action);
@@ -292,7 +308,7 @@ const Checkout = ({shipStateData, isLoading, currentLanguageCode, merchant, stri
       setLoader(false) 
       deleteAllFromCart()
       setTimeout(() => {
-        history.push('/')
+        navigate('/')
       }, 200);
       
     }
@@ -509,7 +525,7 @@ const Checkout = ({shipStateData, isLoading, currentLanguageCode, merchant, stri
     setLoader(true)
 
     if( !cartID ) {
-      history.push("/");
+        navigate("/");
     }
 
     let card = elements.getElement(CardElement);
@@ -626,7 +642,7 @@ const Checkout = ({shipStateData, isLoading, currentLanguageCode, merchant, stri
         deleteAllFromCart(response.id)
         setLocalData('order-email', data.email)
         addToast("Your order has been submitted", { appearance: "success", autoDismiss: true });
-        history.push('/order-confirm')
+        navigate('/order-confirm')
       }
       setLoader(false)
     } catch (error) {
@@ -696,7 +712,6 @@ const Checkout = ({shipStateData, isLoading, currentLanguageCode, merchant, stri
       //execute
 
        
-       console.log('Required fields '+ JSON.stringify(param));
        unity(p);
   
     } else {
@@ -719,19 +734,14 @@ const Checkout = ({shipStateData, isLoading, currentLanguageCode, merchant, stri
                 var millisecondsToWait = 5000;
                 setTimeout(function() {
                     // Whatever you want to do after the wait
-                    console.log('Into execution');
-
-
                     executed = false;
                 }, millisecondsToWait);
             } 
             return;
             /**
-            console.log('The execution '+ executed);
             var millisecondsToWait = 5000;
             setTimeout(function() {
                 // Whatever you want to do after the wait
-                console.log('Into execution');
                 executed = false;
             }, millisecondsToWait);
             // do something
@@ -803,10 +813,6 @@ const Checkout = ({shipStateData, isLoading, currentLanguageCode, merchant, stri
                         <div className="col-lg-12">
                           <div className="billing-info mb-20">
                             <label>{strings["Street Address"]}</label>
-                            <Script
-                              url={"https://maps.googleapis.com/maps/api/js?key=" + window._env_.APP_MAP_API_KEY + "&libraries=places"}
-                              onLoad={handleScriptLoad}
-                            />
                             <input
                               className="billing-address"
                               placeholder={strings["House number and street name"]}
@@ -1027,7 +1033,7 @@ const Checkout = ({shipStateData, isLoading, currentLanguageCode, merchant, stri
                                       rules={paymentForm.shipStateProvince.validate}
                                       render={props => {
                                         return (
-                                          <select onChange={(a) => console.log('-----'+a)} value={props.value}>
+                                          <select value={props.value}>
                                             <option>{strings["State / Province"]}</option>
                                             {
                                               shipStateData.map((data, i) => {

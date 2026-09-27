@@ -1,7 +1,7 @@
 import PropTypes from "prop-types";
 import React, { Fragment, useEffect, useState } from "react";
 import MetaTags from "react-meta-tags";
-import { Link, useHistory } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { BreadcrumbsItem } from "react-breadcrumbs-dynamic";
 import Tab from "react-bootstrap/Tab";
 import Nav from "react-bootstrap/Nav";
@@ -117,7 +117,7 @@ const registerForm = {
 const LoginRegister = ({ merchant, strings, props, location, setLoader, setUser, getCart, getCountry, getShippingCountry, getState, shipCountryData, currentLocation, stateData, cartItems, addToCart, defaultStore }) => {
   const { pathname } = location;
   const { addToast } = useToasts();
-  const history = useHistory();
+  const navigate = useNavigate();
   const [isRemember, setIsRemember] = useState(false);
   const { register, handleSubmit, errors, setValue: setLoginValue } = useForm({
     mode: "onChange",
@@ -181,7 +181,7 @@ const LoginRegister = ({ merchant, strings, props, location, setLoader, setUser,
         addToast("You have successfully logged in to this website", { appearance: "success", autoDismiss: true });
         setUser(response)
         setLocalData('token', response.token)
-        history.push('my-account')
+        navigate('my-account')
 
       }
       setLoader(false)
@@ -194,13 +194,10 @@ const LoginRegister = ({ merchant, strings, props, location, setLoader, setUser,
     try {
       let action = constant.ACTION.AUTH + constant.ACTION.CUSTOMER + constant.ACTION.CARTS + '?&lang=' + JSON.parse(getLocalData('redux_localstorage_simple')).multilanguage.currentLanguageCode;
       let response = await WebService.get(action);
-      console.log(response)
       if (response) {
 
         setTimeout(() => {
-          console.log(response.code);
           cartItems.products.forEach((element) => {
-            console.log(response.code);
             addToCart(element, '', response, element.quantity, defaultStore, data)
           });
         }, 2000);
@@ -260,7 +257,7 @@ const LoginRegister = ({ merchant, strings, props, location, setLoader, setUser,
         addToast("'You have successfully registerd in to this website.", { appearance: "success", autoDismiss: true });
         setUser(response)
         setLocalData('token', response.token)
-        history.push('my-account')
+        navigate('my-account')
 
       }
       setLoader(false)

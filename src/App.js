@@ -1,11 +1,12 @@
 import PropTypes from "prop-types";
 import React, { useEffect, Suspense, lazy } from "react";
 import ScrollToTop from "./helpers/scroll-top";
-import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { ToastProvider } from "react-toast-notifications";
 import { multilanguage, loadLanguages } from "redux-multilanguage";
 import { connect } from "react-redux";
 import { BreadcrumbsProvider } from "react-breadcrumbs-dynamic";
+import { ErrorBoundary } from "react-error-boundary";
 
 import Loader from "./components/loader/loader"
 import Cookie from "./components/consent/Cookie"
@@ -54,7 +55,6 @@ const App = (props) => {
     const cookies = new Cookies();
     let cookie = cookies.get(cart_cookie);
     if (cookie) {
-      console.log('cookie !!! ' + cookie);
       props.dispatch(setShopizerCartID(cookie));
     }
     // console.log(window._env_);
@@ -80,6 +80,7 @@ const App = (props) => {
 
           <Loader></Loader>
           <Cookie></Cookie>
+          <ErrorBoundary FallbackComponent={ErrorFallback} onReset={() => window.location.reload()}>
           <ScrollToTop>
             <Suspense
               fallback={
@@ -91,11 +92,10 @@ const App = (props) => {
                 </div>
               }
             >
-              <Switch>
+              <Routes>
                 <Route
-                  exact
                   path="/"
-                  component={Home}
+                  element={<Home />}
                 />
 
                 {/* Homepages */}
@@ -104,86 +104,97 @@ const App = (props) => {
                 {/* Shop pages */}
                 <Route
                   path="/category/:id"
-                  component={Category}
+                  element={<Category />}
                 />
 
                 {/* Shop product pages */}
                 <Route
                   path="/product/:id"
-                  component={ProductDetail}
+                  element={<ProductDetail />}
                 />
                 <Route
                   path="/content/:id"
-                  component={Content}
+                  element={<Content />}
                 />
                 <Route
                   path="/search/:id"
-                  component={SearchProduct}
+                  element={<SearchProduct />}
                 />
 
                 {/* Other pages */}
 
                 <Route
                   path="/contact"
-                  component={Contact}
+                  element={<Contact />}
                 />
                 <Route
                   path="/my-account"
-                  component={MyAccount}
+                  element={<MyAccount />}
                 />
                 <Route
                   path="/register"
-                  component={LoginRegister}
+                  element={<LoginRegister />}
                 />
                 <Route
                   path="/login"
-                  component={LoginRegister}
+                  element={<LoginRegister />}
                 />
                 <Route
                   path="/forgot-password"
-                  component={ForgotPassword}
+                  element={<ForgotPassword />}
                 />
                 <Route
                   path="/customer/:code/reset/:id"
-                  component={ResetPassword}
+                  element={<ResetPassword />}
                 />
 
                 <Route
                   path="/cart"
-                  component={Cart}
+                  element={<Cart />}
                 />
                 <Route
                   path="/recent-order"
-                  component={RecentOrder}
+                  element={<RecentOrder />}
                 />
                 <Route
                   path="/order-details/:id"
-                  component={OrderDetails}
+                  element={<OrderDetails />}
                 />
                 <Route
                   path="/checkout"
-                  component={Checkout}
+                  element={<Checkout />}
                 />
 
                 <Route
                   path="/order-confirm"
-                  component={OrderConfirm}
+                  element={<OrderConfirm />}
                 />
 
                 <Route
                   path={"/not-found"}
-                  component={NotFound}
+                  element={<NotFound />}
                 />
 
-                <Route exact component={NotFound} />
-              </Switch>
+                <Route path="*" element={<NotFound />} />
+              </Routes>
             </Suspense>
           </ScrollToTop>
+          </ErrorBoundary>
         </Router>
       </BreadcrumbsProvider>
     </ToastProvider>
   );
 };
+
+const ErrorFallback = ({ error, resetErrorBoundary }) => (
+  <div className="error-boundary" style={{ textAlign: 'center', padding: '50px' }}>
+    <h2>Something went wrong</h2>
+    {process.env.NODE_ENV === 'development' && <pre style={{ color: 'red' }}>{error.message}</pre>}
+    <button onClick={resetErrorBoundary} style={{ padding: '10px 20px', cursor: 'pointer' }}>
+      Try again
+    </button>
+  </div>
+);
 
 App.propTypes = {
   dispatch: PropTypes.func

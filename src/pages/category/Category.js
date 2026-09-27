@@ -1,7 +1,7 @@
 import PropTypes from "prop-types";
 import React, { Fragment, useState, useEffect } from 'react';
 import MetaTags from 'react-meta-tags';
-import { useHistory } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 // import Paginator from 'react-hooks-paginator';
 import { BreadcrumbsItem } from 'react-breadcrumbs-dynamic';
 import { connect } from 'react-redux';
@@ -21,7 +21,7 @@ import ReactPaginate from 'react-paginate';
 
 const Category = ({ setCategoryID, isLoading, strings, location, defaultStore, currentLanguageCode, categoryID, setLoader, }) => {
     const [layout, setLayout] = useState('grid three-column');
-    const history = useHistory();
+    const navigate = useNavigate();
     // const [sortType, setSortType] = useState('');
     const [categoryValue, setCategoryValue] = useState('');
     // const [filterSortType, setFilterSortType] = useState('');
@@ -82,7 +82,7 @@ const Category = ({ setCategoryID, isLoading, strings, location, defaultStore, c
         // console.log(sortValue)
         // setCategoryValue(sortValue)
         setCategoryID(sortValue.id)
-        history.push("/category/" + sortValue.description.friendlyUrl)
+        navigate("/category/" + sortValue.description.friendlyUrl)
         // getProductList(categoryValue, selectedOption, selectedManufature)
     }
 
@@ -124,7 +124,7 @@ const Category = ({ setCategoryID, isLoading, strings, location, defaultStore, c
             // console.log(response.children);
             if (response) {
                 //console.log(response);
-                history.push(response.description.friendlyUrl)
+                navigate(response.description.friendlyUrl)
                 setProductDetails(response);
                 // let temp = response.children;
                 // console.log(temp)

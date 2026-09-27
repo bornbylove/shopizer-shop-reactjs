@@ -1,7 +1,7 @@
 import PropTypes from "prop-types";
 import React, { Fragment, useEffect, useState } from "react";
 import MetaTags from "react-meta-tags";
-import { Link, useHistory } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { BreadcrumbsItem } from "react-breadcrumbs-dynamic";
 import Tab from "react-bootstrap/Tab";
 import Nav from "react-bootstrap/Nav";
@@ -42,7 +42,7 @@ const resetForm = {
 const ResetPassword = ({ merchant, strings, props, location, setLoader, defaultStore, storeCode, resetID }) => {
     // const { pathname } = location;
     const { addToast } = useToasts();
-    const history = useHistory();
+    const navigate = useNavigate();
     const [isValid, setIsValid] = useState(true);
     const { register, handleSubmit, errors, watch, setError, clearErrors, reset } = useForm({
         mode: "onChange",
@@ -106,12 +106,11 @@ const ResetPassword = ({ merchant, strings, props, location, setLoader, defaultS
             await WebService.post(action, param);
             // if (response) {
             reset({})
-            history.push('/login')
+            navigate('/login')
             addToast("You have successfully reset your password. you can now login as usual with your email address and your new password.", { appearance: "success", autoDismiss: true });
             // }
             setLoader(false)
         } catch (error) {
-            console.log(error)
             addToast("Password don't match", { appearance: "error", autoDismiss: true });
             setLoader(false)
         }

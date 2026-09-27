@@ -1,6 +1,6 @@
 import PropTypes from "prop-types";
 import React, { Fragment, useEffect, useState } from "react";
-import { useHistory } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import MetaTags from "react-meta-tags";
 import { BreadcrumbsItem } from "react-breadcrumbs-dynamic";
 import Card from "react-bootstrap/Card";
@@ -14,7 +14,6 @@ import { setLoader } from "../../redux/actions/loaderActions";
 import { useToasts } from "react-toast-notifications";
 import { connect } from "react-redux";
 import { getState, getCountry, getShippingState } from "../../redux/actions/userAction";
-import Script from 'react-load-script';
 import { multilanguage } from "redux-multilanguage";
 import SweetAlert from 'react-bootstrap-sweetalert';
 import { deleteAllFromCart } from "../../redux/actions/cartActions";
@@ -277,7 +276,7 @@ const billingForm = {
 const MyAccount = ({ language, setUser, deleteAllFromCart, merchant, strings, location, setLoader, getState, getCountry, getShippingState, countryData, stateData, shipStateData, userData }) => {
   const { pathname } = location;
   const { addToast } = useToasts();
-  const history = useHistory();
+  const navigate = useNavigate();
   const [isDeleted, setIsDeleted] = useState(false)
   const { register, handleSubmit, errors, watch, setError, clearErrors, reset } = useForm({
     mode: "onChange",
@@ -318,6 +317,22 @@ const MyAccount = ({ language, setUser, deleteAllFromCart, merchant, strings, lo
     getShippingState()
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
+
+  useEffect(() => {
+    const script = document.createElement('script');
+    script.src = "https://maps.googleapis.com/maps/api/js?key=" + window._env_.APP_MAP_API_KEY + "&libraries=places";
+    script.async = true;
+    script.defer = true;
+    script.onload = () => {
+      handleScriptLoad();
+      handleDeliveryScriptLoad();
+    };
+    document.body.appendChild(script);
+    return () => {
+      document.body.removeChild(script);
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
   const getProfile = async () => {
     let action = constant.ACTION.AUTH + constant.ACTION.CUSTOMER + constant.ACTION.PROFILE;
     try {
@@ -361,7 +376,7 @@ const MyAccount = ({ language, setUser, deleteAllFromCart, merchant, strings, lo
       //   // setConfig(response)
     }
     catch (error) {
-      history.push('/login')
+      navigate('/login')
     }
   }
   const onChangePassword = async (data) => {
@@ -631,7 +646,6 @@ const MyAccount = ({ language, setUser, deleteAllFromCart, merchant, strings, lo
     }
   }
   const onDeleteConfirm = () => {
-    console.log('confrim')
     setIsDeleted(!isDeleted)
   }
   const onDelete = async () => {
@@ -644,7 +658,7 @@ const MyAccount = ({ language, setUser, deleteAllFromCart, merchant, strings, lo
       await WebService.delete(action);
 
       addToast("Your account has been deleted successfully.", { appearance: "success", autoDismiss: true });
-      history.push('/login')
+      navigate('/login')
       setUser('')
       setLocalData('token', '')
       deleteAllFromCart()
@@ -761,10 +775,6 @@ const MyAccount = ({ language, setUser, deleteAllFromCart, merchant, strings, lo
                                 </div>
                                 <div className="col-lg-12">
                                   <div className="billing-info mb-20">
-                                    <Script
-                                      url={"https://maps.googleapis.com/maps/api/js?key=" + window._env_.APP_MAP_API_KEY + "&libraries=places"}
-                                      onLoad={handleScriptLoad}
-                                    />
                                     <label>{strings["Street Address"]}</label>
                                     <input
                                       className="billing-info"
@@ -908,11 +918,7 @@ const MyAccount = ({ language, setUser, deleteAllFromCart, merchant, strings, lo
                                 </div>
                                 <div className="col-lg-12">
                                   <div className="billing-info mb-20">
-                                    <Script
-                                      url={"https://maps.googleapis.com/maps/api/js?key=" + window._env_.APP_MAP_API_KEY + "&libraries=places"}
-                                      onLoad={handleDeliveryScriptLoad}
-                                    />
-                                    <label>{strings["Street Address"]}</label>
+                                      <label>{strings["Street Address"]}</label>
                                     <input
                                       className="billing-info"
                                       placeholder="House number and street name"

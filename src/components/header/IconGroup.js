@@ -1,6 +1,6 @@
 import PropTypes from "prop-types";
 import React, { useState, useEffect } from "react";
-import { Link, useRouteMatch, useHistory } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import { connect } from "react-redux";
 import MenuCart from "./sub-components/MenuCart";
 import { deleteFromCart, deleteAllFromCart } from "../../redux/actions/cartActions";
@@ -25,8 +25,8 @@ const IconGroup = ({
   strings,
   getCart
 }) => {
-  const pathname = useRouteMatch();
-  const history = useHistory();
+  const navigate = useNavigate();
+  const pathname = useLocation();
   const timeout = 1000 * 60 * 30;
   // const [idleTimer, setIdleTimer] = useState(null);
   // const [searchData, setSearchData] = useState([]);
@@ -63,7 +63,7 @@ const IconGroup = ({
     catch (error) {
       setUser('')
       setLocalData('token', '')
-      history.push('/')
+      navigate('/')
     }
   }
   const handleClick = e => {

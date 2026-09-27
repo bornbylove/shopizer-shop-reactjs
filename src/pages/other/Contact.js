@@ -62,7 +62,6 @@ const Contact = ({ strings, location, merchant, setLoader }) => {
   });
 
   const onSubmitContactForm = async (data) => {
-    // console.log(data)
     setLoader(true)
     try {
       let action = constant.ACTION.CONTACT;

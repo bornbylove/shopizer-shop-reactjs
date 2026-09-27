@@ -1,6 +1,6 @@
 import PropTypes from "prop-types";
 import React, { Fragment, useEffect, useState } from "react";
-import { Link, useHistory } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 // import { useToasts } from "react-toast-notifications";
 import MetaTags from "react-meta-tags";
 import { BreadcrumbsItem } from "react-breadcrumbs-dynamic";
@@ -26,7 +26,7 @@ const RecentOrder = ({
   isLoading
 }) => {
   const pageLimit = 5;
-  const history = useHistory();
+  const navigate = useNavigate();
   const { pathname } = location;
   const [orderData, setOrderData] = useState({});
   // const [currentPage, setCurrentPage] = useState(0);
@@ -49,7 +49,6 @@ const RecentOrder = ({
       setLoader(false)
     } catch (error) {
       setLoader(false)
-      console.log(error, '------------')
     }
   }
   const onClickItem = (product) => {
@@ -93,7 +92,7 @@ const RecentOrder = ({
                               <thead>
                                 <tr className="order-header">
                                   <th>{strings["Order Id"]} :  {order.id}</th>
-                                  <th onClick={() => history.push("/order-details/" + order.id)} style={{ cursor: 'pointer' }}>{strings["View Details"]}</th>
+                                  <th onClick={() => navigate("/order-details/" + order.id)} style={{ cursor: 'pointer' }}>{strings["View Details"]}</th>
                                 </tr>
                               </thead>
                               <tbody>

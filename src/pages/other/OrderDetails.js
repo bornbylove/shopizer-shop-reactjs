@@ -47,7 +47,6 @@ const OrderDetails = ({
             setLoader(false)
         } catch (error) {
             setLoader(false)
-            console.log(error, '------------')
         }
     }
     const onClickItem = (product) => {

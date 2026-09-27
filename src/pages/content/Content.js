@@ -15,7 +15,6 @@ const Content = ({ strings, contentID, setLoader, currentLanguageCode }) => {
 
     const [contentDetails, setContentDetail] = useState('');
     useEffect(() => {
-        console.log(contentID)
         getContent();
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [contentID]);
@@ -26,7 +25,6 @@ const Content = ({ strings, contentID, setLoader, currentLanguageCode }) => {
         try {
             let response = await WebService.get(action);
             if (response) {
-                console.log(response)
                 setContentDetail(response)
             }
             setLoader(false)

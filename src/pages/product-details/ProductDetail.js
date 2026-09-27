@@ -29,7 +29,6 @@ const ProductDetails = ({ strings, location, productID, currentLanguageCode, set
     try {
       let response = await WebService.get(action);
       if (response) {
-        console.log(response)
         setProductDetails(response)
         setLoader(false)
       }

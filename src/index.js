@@ -1,7 +1,7 @@
 import "react-app-polyfill/ie11";
 import "react-app-polyfill/stable";
 import React from "react";
-import ReactDOM from "react-dom";
+import { createRoot } from "react-dom/client";
 import { createStore, applyMiddleware } from "redux";
 import thunk from "redux-thunk";
 import { save, load } from "redux-localstorage-simple";
@@ -13,7 +13,7 @@ import App from "./App";
 import "./assets/scss/style.scss";
 import * as serviceWorker from "./serviceWorker";
 
-import { composeWithDevTools } from "redux-devtools-extension";
+import { composeWithDevTools } from "@redux-devtools/extension";
 
 const store = createStore(
   rootReducer,
@@ -24,11 +24,11 @@ const store = createStore(
 // fetch products from json file
 // store.dispatch(fetchProducts(products));
 
-ReactDOM.render(
+const root = createRoot(document.getElementById("root"));
+root.render(
     <Provider store={store}>
       <App />
-    </Provider>,
-  document.getElementById("root")
+    </Provider>
 );
 
 // If you want your app to work offline and load faster, you can change

@@ -6,7 +6,7 @@ In the project directory, you can run the commands below
 
 Configure shopizer backend in public/env-config.js
 
-## Tested with node  v16.13.0
+## Tested with Node.js 20 LTS
 
 ### USING NPM
 
